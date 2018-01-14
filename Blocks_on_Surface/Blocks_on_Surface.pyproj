@@ -6,8 +6,7 @@
     <ProjectGuid>fc1c41b8-489a-492a-a5af-fe2bb3c6a2b7</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>Blocks_on_Surface.py</StartupFile>
-    <SearchPath>
-    </SearchPath>
+    <SearchPath>..\..\..\..\..\..\..\Program Files\Siemens\NX 11.0\NXBIN\python\</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Blocks_on_Surface</Name>
@@ -23,6 +22,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Blocks_on_Surface.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{473d8ac5-f5ff-42a9-9901-20ce9b969919}\3.4" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
