@@ -1,4 +1,5 @@
 import string
+from sys import exit
 import NXOpen
 import NXOpen.BlockStyler
 import NXOpen.Features
@@ -21,22 +22,21 @@ class blocks:
         try:
             self.theSession = NXOpen.Session.GetSession()
             self.theUI = NXOpen.UI.GetUI()
-            
             self.theDlxFileName = "blocks.dlx"
             self.theDialog = self.theUI.CreateDialog(self.theDlxFileName)
             self.theDialog.AddApplyHandler(self.apply_cb)
             self.theDialog.AddOkHandler(self.ok_cb)
+            self.theDialog.AddCancelHandler(self.cancel_cb)
             self.theDialog.AddUpdateHandler(self.update_cb)
             self.theDialog.AddInitializeHandler(self.initialize_cb)
             self.theDialog.AddDialogShownHandler(self.dialogShown_cb)
+
+
         except Exception as ex:
             # ---- Enter your exception handling code here -----
             raise ex
         
-    
-    #------------------------------------------------------------------------------
-    # This method shows the dialog on the screen
-    #------------------------------------------------------------------------------
+
     def Show(self):
         try:
             self.theDialog.Show()
@@ -45,6 +45,9 @@ class blocks:
             self.theUI.NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
         
     
+
+
+
     #------------------------------------------------------------------------------
     # Method Name: Dispose
     #------------------------------------------------------------------------------
@@ -52,11 +55,7 @@ class blocks:
         if self.theDialog != None:
             self.theDialog.Dispose()
             self.theDialog = None
-    
-    #------------------------------------------------------------------------------
-    # ---------------------Block UI Styler Callback Functions--------------------------
-    #------------------------------------------------------------------------------
-    
+  
     #------------------------------------------------------------------------------
     # Callback Name: initialize_cb
     #------------------------------------------------------------------------------
@@ -70,12 +69,17 @@ class blocks:
             # ---- Enter your exception handling code here -----
             self.theUI.NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
         
-    
-    #------------------------------------------------------------------------------
-    # Callback Name: dialogShown_cb
-    # This callback is executed just before the dialog launch. Thus any value set 
-    # here will take precedence and dialog will be launched showing that value. 
-    #------------------------------------------------------------------------------
+    def cancel_cb(self):
+     
+        try:
+            global NEW_LIST
+            NEW_LIST = [1 ] 
+        except Exception as ex:
+            # ---- Enter your exception handling code here -----
+            self.theUI.NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
+
+
+   
     def dialogShown_cb(self):
         try:
             # ---- Enter your callback code here -----
@@ -91,9 +95,6 @@ class blocks:
     def apply_cb(self):
         errorCode = 0
         try:
-            global NEW_LIST
-            NEW_LIST = [self.num_of_blocks.Value, self.faace.GetSelectedObjects() , self.block_size.Value ] 
-            return NEW_LIST
             # ---- Enter your callback code here -----
             pass
         except Exception as ex:
@@ -113,7 +114,6 @@ class blocks:
                 pass
             elif block == self.num_of_blocks:
                 # ---- Enter your code here -----
-
                 pass
             elif block == self.block_size:
                 # ---- Enter your code here -----
@@ -130,9 +130,6 @@ class blocks:
     def ok_cb(self):
         errorCode = 0
         try:
-            #theMessageBox.Show(
-            #        "Selection Error", NXOpen.NXMessageBox.DialogType.Information,
-            #        "Too much objects selected :  %d " %( self.num_of_blocks.Value ) )
             global NEW_LIST
             NEW_LIST = [self.num_of_blocks.Value, self.faace.GetSelectedObjects() , self.block_size.Value ] 
             # ---- Enter your callback code here -----
@@ -143,6 +140,10 @@ class blocks:
             self.theUI.NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
         
         return errorCode
+
+
+
+
     
     
     #------------------------------------------------------------------------------
@@ -151,7 +152,6 @@ class blocks:
     #------------------------------------------------------------------------------
     def GetBlockProperties(self, blockID):
         try:
-
             return self.theDialog.GetBlockProperties(blockID)
         except Exception as ex:
             # ---- Enter your exception handling code here -----
@@ -167,9 +167,6 @@ def main_styl():
         #  The following method shows the dialog immediately
         theblocks.Show()
         return NEW_LIST
-        #theMessageBox.Show(
-        #"Selection Error", NXOpen.NXMessageBox.DialogType.Information,
-        #" AAASAS:  %d " %( NEW_LIST[0]) )
     except Exception as ex:
         # ---- Enter your exception handling code here -----
         NXOpen.UI.GetUI().NXMessageBox.Show("Block Styler", NXOpen.NXMessageBox.DialogType.Error, str(ex))
@@ -182,6 +179,8 @@ def main_styl():
 def main_first(new_list):
 
 
+    if new_list.count(1) == 1:
+        return
     theSession = NXOpen.Session.GetSession()
     theUI = NXOpen.UI.GetUI()
     
